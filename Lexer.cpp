@@ -7,10 +7,16 @@ set<char> delimeters;
 set<string> keywords;
 set<string> double_operators;
 set<char> whitespaces;
+set<string> arithmetic_operators;
+set<string> logical_operators;
+set<string> comparators;
+set<string> assignment_operators;
+set<string> unary_operators;
+set<string> special_chars;
 
 void handle_delimeter(string &s, int &pos) {
     if(pos==(int)s.size()-1) {
-        lexemes.push_back(to_string(s[pos]));
+        lexemes.push_back(string(1, s[pos]));
         return;
     }
 
@@ -51,6 +57,42 @@ void handle_delimeter(string &s, int &pos) {
     }
 }
 
+bool check_numeric(string token) {
+    int n = token.size();
+
+    for(int i=0;i<n;i++) {
+        if(!isdigit(token[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool check_indentifier(string token) {
+    int n = token.size();
+
+    if(!(isalpha(token[0]))) {
+        return false;
+    }
+
+    for(int i=1;i<n;i++) {
+        if(!isdigit(token[i]) && !isalpha(token[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool check_string_literal(string token) {
+    if(token[0]=='\"') {
+        return true;
+    }
+
+    return false;
+}
+
 signed main() {
     string s;
     getline(cin, s);
@@ -66,6 +108,22 @@ signed main() {
                         "*=", "/="};
 
     whitespaces = {' ', '\n', '\t', '\r'};
+
+    keywords = {"int", "char", "float", "bool", "if", 
+                "else", "for", "main", "true", "false",
+                "function", "return"};
+
+    arithmetic_operators = {"+","*","/","-","%","<<",">>","**","//"};
+
+    logical_operators = {"&&","||"};
+
+    comparators = {"<",">","==",">=","<=","!="};
+
+    assignment_operators = {"=","+=","-=","*=","/="};
+
+    unary_operators = {"++","--","!","+","-","~"};
+
+    special_chars = {"(",")","{","}","[","]",";",","};
 
     int n = s.size();
     string temp = "";
@@ -87,6 +145,37 @@ signed main() {
         lexemes.push_back(temp);
     }
 
-    //cout<<"number of lexemes is "<<(int)lexemes.size()<<endl;
-    //for(int i=0;i<(int)lexemes.size();i++) cout<<lexemes[i]<<endl;
+    for(int i=0;i<(int)lexemes.size();i++) cout<<lexemes[i]<<endl;
+
+    /***************************************finished obtaining lexemes*************************************/
+
+    for(int i=0;i<(int)lexemes.size();i++) {
+        if(arithmetic_operators.find(lexemes[i]) != arithmetic_operators.end()) {
+            cout<<lexemes[i]<<" "<<"arithmetic_operator"<<endl;
+        }
+        else if(logical_operators.find(lexemes[i]) != logical_operators.end()) {
+            cout<<lexemes[i]<<" "<<"logical_operator"<<endl;
+        }
+        else if(unary_operators.find(lexemes[i]) != unary_operators.end()) {
+            cout<<lexemes[i]<<" "<<"unary_operator"<<endl;
+        }
+        else if(keywords.find(lexemes[i]) != keywords.end()) {
+            cout<<lexemes[i]<<" keyword"<<endl;
+        }
+        else if(special_chars.find(lexemes[i]) != special_chars.end()) {
+            cout<<lexemes[i]<<" special_char"<<endl;
+        }
+        else if(comparators.find(lexemes[i]) != comparators.end()) {
+            cout<<lexemes[i]<<" comparator"<<endl;
+        }
+        else if(check_numeric(lexemes[i])) {
+            cout<<lexemes[i]<<" number"<<endl;
+        }
+        else if(check_indentifier(lexemes[i])) {
+            cout<<lexemes[i]<<" identifier"<<endl;
+        }
+        else if(check_string_literal(lexemes[i])) {
+            cout<<lexemes[i]<<" string literal"<<endl;
+        }
+    }
 }
