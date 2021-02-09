@@ -9,8 +9,33 @@ set<string> double_operators;
 set<char> whitespaces;
 
 void handle_delimeter(string &s, int &pos) {
-    if(pos==s.size()-1) {
+    if(pos==(int)s.size()-1) {
         lexemes.push_back(to_string(s[pos]));
+        return;
+    }
+
+    else if(s[pos]=='"') {
+        string temp = "\"";
+        pos++;
+
+        while(pos < (int)s.size() && s[pos]!='"') {
+            if(s[pos]=='\\') {
+                temp.push_back(s[pos]);
+                temp.push_back(s[pos+1]);
+                pos++;
+            } 
+        
+            else {
+                temp.push_back(s[pos]);
+            }
+            pos++;
+        }
+
+        if(pos<(int)s.size()) {
+            temp.push_back('\"');
+        }
+
+        lexemes.push_back(temp);
         return;
     }
 
@@ -31,8 +56,15 @@ signed main() {
     getline(cin, s);
 
     //TODO handle the case with strings
-    delimeters = {'<', '>', '=', '&', '|', '+', '-', '*', '/', '^', '%', ' ', ',', '[', ']', '{', '}', '(', ')', ';', '\n', '\t', '\r'};
-    double_operators = {"<<", ">>", "==", "&&", "||", "++", "+=", "--", "-=", "**", "//", "!=", "*=", "/="};
+    delimeters = {'<', '>', '=', '&', '|', '+', '-',
+                    '*', '/', '^', '%', ' ', ',', '[', 
+                    ']', '{', '}', '(', ')', ';', '"', '\'', '\n',
+                    '\t', '\r'};
+
+    double_operators = {"<<", ">>", "==", "&&", "||", "++",
+                        "+=", "--", "-=", "**", "//", "!=",
+                        "*=", "/="};
+
     whitespaces = {' ', '\n', '\t', '\r'};
 
     int n = s.size();
@@ -55,6 +87,6 @@ signed main() {
         lexemes.push_back(temp);
     }
 
-    cout<<"number of lexemes is "<<lexemes.size()<<endl;
-    for(int i=0;i<lexemes.size();i++) cout<<lexemes[i]<<endl;
+    //cout<<"number of lexemes is "<<(int)lexemes.size()<<endl;
+    //for(int i=0;i<(int)lexemes.size();i++) cout<<lexemes[i]<<endl;
 }
