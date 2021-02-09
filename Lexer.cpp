@@ -2,20 +2,11 @@
 #include <string>
 using namespace std;
 
-//delimiters : <space> () {} [] , ; <> \n
-//keywords : int char for if float return
-
 vector<string> lexemes;
 set<char> delimeters;
 set<string> keywords;
 set<string> double_operators;
 set<char> whitespaces;
-
-void test() {
-    for(int i=0;i<10;i++) {
-        cout<<i<<endl;
-    }
-}
 
 void handle_delimeter(string &s, int &pos) {
     if(pos==s.size()-1) {
