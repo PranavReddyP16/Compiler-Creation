@@ -97,6 +97,10 @@ bool check_numeric(string token) {
 bool check_identifier(string token) {
     int n = token.size();
 
+    if(keywords.find(token) != keywords.end()) {
+        return false;
+    }
+
     if(!(isalpha(token[0]) && token[0]!='_')) {
         return false;
     }
@@ -136,10 +140,27 @@ bool check_string_literal(string token) {
 }
 
 bool is_valid_file(char* fname) {
+    int i=0;
+    while(fname[i]!='.' && fname[i]!='\0') {
+        i++;
+    }
+    if(fname[i]=='\0') {
+        return false;
+    }
 
+    if(fname[i+1]=='t' && fname[i+2]=='e' && fname[i+3]=='m' && fname[i+4]=='p') {
+        return true;
+    }
+
+    return false;
 }
 
 signed main(int argc, char* argv[]) {
+
+    if(!is_valid_file(argv[1])) {
+        cerr<<"Invalid source file"<<endl;
+        return 0;
+    }
 
     ifstream ifs(argv[1]);
     string s((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
@@ -160,7 +181,7 @@ signed main(int argc, char* argv[]) {
 
     keywords = {"int", "char", "float", "bool", "if", 
                 "else", "for", "main", "true", "false",
-                "function", "return"};
+                "function", "return", "print"};
 
     arithmetic_operators = {"+","*","/","-","%","<<",">>","**","//"};
 
@@ -204,7 +225,19 @@ signed main(int argc, char* argv[]) {
 
     for(int i=0;i<(int)lexemes.size();i++) {
         if(arithmetic_operators.find(lexemes[i].first) != arithmetic_operators.end()) {
-            cout<<lexemes[i].first<<" "<<"arithmetic_operator at line "<<lexemes[i].second<<endl;
+            if(i>0 && 
+                    !(check_identifier(lexemes[i-1].first) || check_numeric(lexemes[i-1].first) || 
+                    check_float_literal(lexemes[i-1].first) || lexemes[i-1].first==")" || double_operators.find(lexemes[i-1].first) != double_operators.end()) 
+                    && (lexemes[i].first=="-" || lexemes[i].first=="+")) {
+
+                cout<<lexemes[i].first<<" unary operator at line "<<lexemes[i].second<<endl;
+            }
+            else if(i==0 && (lexemes[i].first=="+" || lexemes[i].first=="-")) {
+                cout<<lexemes[i].first<<" unary operator at line "<<lexemes[i].second<<endl;
+            }
+            else {
+                cout<<lexemes[i].first<<" "<<"arithmetic_operator at line "<<lexemes[i].second<<endl;
+            }
         }
         else if(logical_operators.find(lexemes[i].first) != logical_operators.end()) {
             cout<<lexemes[i].first<<" "<<"logical_operator at line "<<lexemes[i].second<<endl;
