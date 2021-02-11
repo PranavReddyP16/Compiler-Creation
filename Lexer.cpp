@@ -195,7 +195,7 @@ signed main() {
             cout<<lexemes[i]<<" string literal"<<endl;
         }
         else if(check_float_literal(lexemes[i])) {
-            cout<<lexemes[i]<<" decimal literal"<<endl;
+            cout<<lexemes[i]<<" floating_point_Literal"<<endl;
         }
     }
 }
