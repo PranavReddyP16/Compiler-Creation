@@ -85,6 +85,23 @@ bool check_indentifier(string token) {
     return true;
 }
 
+bool check_float_literal(string token) {
+    int decimal_count=0;
+    int n = token.size();
+
+    for(int i=0;i<n;i++) {
+        if(token[i]=='.') {
+            decimal_count++;
+        }
+        else if(!isdigit(token[i])) {
+            return false;
+        }
+    }
+
+    if(decimal_count!=1) return false;
+    else return true;
+}
+
 bool check_string_literal(string token) {
     if(token[0]=='\"') {
         return true;
@@ -176,6 +193,9 @@ signed main() {
         }
         else if(check_string_literal(lexemes[i])) {
             cout<<lexemes[i]<<" string literal"<<endl;
+        }
+        else if(check_float_literal(lexemes[i])) {
+            cout<<lexemes[i]<<" decimal literal"<<endl;
         }
     }
 }
