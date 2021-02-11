@@ -2,7 +2,8 @@
 #include <string>
 using namespace std;
 
-vector<string> lexemes;
+vector<int> line_numbers;
+vector<pair<string, int>> lexemes;
 set<char> delimeters;
 set<string> keywords;
 set<string> double_operators;
@@ -14,17 +15,28 @@ set<string> assignment_operators;
 set<string> unary_operators;
 set<string> special_chars;
 
+int line_count=1;
+
 void handle_delimeter(string &s, int &pos) {
     if(pos==(int)s.size()-1) {
-        lexemes.push_back(string(1, s[pos]));
+        if(s[pos] == '\n') {
+            return;
+        }
+
+        lexemes.push_back({string(1, s[pos]), line_count});
         return;
     }
 
+    //string literal checking
     else if(s[pos]=='"') {
         string temp = "\"";
         pos++;
 
         while(pos < (int)s.size() && s[pos]!='"') {
+            if(s[pos]=='\n') {
+                line_count++;
+            }
+
             if(s[pos]=='\\') {
                 temp.push_back(s[pos]);
                 temp.push_back(s[pos+1]);
@@ -41,19 +53,32 @@ void handle_delimeter(string &s, int &pos) {
             temp.push_back('\"');
         }
 
-        lexemes.push_back(temp);
+        lexemes.push_back({temp, line_count});
         return;
     }
 
+    //comment checking
+    else if(s[pos]=='#') {
+        pos++;
+        while(pos<(int)s.size() && s[pos]!='#') {
+            if(s[pos]=='\n') line_count++;
+            pos++;
+        }
+
+        return;
+    }
+
+    //double symbol checking
     string temp = s.substr(pos, 2);
     if(double_operators.find(temp) != double_operators.end()) {
-        lexemes.push_back(temp);
+        lexemes.push_back({temp, line_count});
         pos++;
     }
 
+    //making sure it's not whitespace
     else {
         if(whitespaces.find(s[pos]) == whitespaces.end())
-            lexemes.push_back(string(1, s[pos]));
+            lexemes.push_back({string(1, s[pos]), line_count});
     }
 }
 
@@ -69,15 +94,15 @@ bool check_numeric(string token) {
     return true;
 }
 
-bool check_indentifier(string token) {
+bool check_identifier(string token) {
     int n = token.size();
 
-    if(!(isalpha(token[0]))) {
+    if(!(isalpha(token[0]) && token[0]!='_')) {
         return false;
     }
 
     for(int i=1;i<n;i++) {
-        if(!isdigit(token[i]) && !isalpha(token[i])) {
+        if(!isdigit(token[i]) && !isalpha(token[i]) && token[i]!='_') {
             return false;
         }
     }
@@ -110,14 +135,21 @@ bool check_string_literal(string token) {
     return false;
 }
 
-signed main() {
-    string s;
-    getline(cin, s);
+bool is_valid_file(char* fname) {
+
+}
+
+signed main(int argc, char* argv[]) {
+
+    ifstream ifs(argv[1]);
+    string s((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
+    s.pop_back();
+
 
     //TODO handle the case with strings
     delimeters = {'<', '>', '=', '&', '|', '+', '-',
                     '*', '/', '^', '%', ' ', ',', '[', 
-                    ']', '{', '}', '(', ')', ';', '"', '\'', '\n',
+                    ']', '{', '}', '(', ')', ';', '"', '#', '\'', '\n',
                     '\t', '\r'};
 
     double_operators = {"<<", ">>", "==", "&&", "||", "++",
@@ -147,7 +179,11 @@ signed main() {
     for(int i=0;i<n;i++) {
         if(delimeters.find(s[i]) != delimeters.end()) {
             if(!temp.empty()) {
-                lexemes.push_back(temp);
+                lexemes.push_back({temp, line_count});
+            }
+
+            if(s[i]=='\n') {
+                line_count++;
             }
 
             temp.clear();
@@ -159,43 +195,51 @@ signed main() {
         }
     }
     if(!temp.empty()) {
-        lexemes.push_back(temp);
+        lexemes.push_back({temp, line_count});
     }
 
-    for(int i=0;i<(int)lexemes.size();i++) cout<<lexemes[i]<<endl;
+    //for(int i=0;i<(int)lexemes.size();i++) cout<<lexemes[i].first<<endl;
 
     /***************************************finished obtaining lexemes*************************************/
 
     for(int i=0;i<(int)lexemes.size();i++) {
-        if(arithmetic_operators.find(lexemes[i]) != arithmetic_operators.end()) {
-            cout<<lexemes[i]<<" "<<"arithmetic_operator"<<endl;
+        if(arithmetic_operators.find(lexemes[i].first) != arithmetic_operators.end()) {
+            cout<<lexemes[i].first<<" "<<"arithmetic_operator at line "<<lexemes[i].second<<endl;
         }
-        else if(logical_operators.find(lexemes[i]) != logical_operators.end()) {
-            cout<<lexemes[i]<<" "<<"logical_operator"<<endl;
+        else if(logical_operators.find(lexemes[i].first) != logical_operators.end()) {
+            cout<<lexemes[i].first<<" "<<"logical_operator at line "<<lexemes[i].second<<endl;
         }
-        else if(unary_operators.find(lexemes[i]) != unary_operators.end()) {
-            cout<<lexemes[i]<<" "<<"unary_operator"<<endl;
+        else if(unary_operators.find(lexemes[i].first) != unary_operators.end()) {
+            cout<<lexemes[i].first<<" "<<"unary_operator at line "<<lexemes[i].second<<endl;
         }
-        else if(keywords.find(lexemes[i]) != keywords.end()) {
-            cout<<lexemes[i]<<" keyword"<<endl;
+        else if(keywords.find(lexemes[i].first) != keywords.end()) {
+            cout<<lexemes[i].first<<" keyword at line "<<lexemes[i].second<<endl;
         }
-        else if(special_chars.find(lexemes[i]) != special_chars.end()) {
-            cout<<lexemes[i]<<" special_char"<<endl;
+        else if(special_chars.find(lexemes[i].first) != special_chars.end()) {
+            cout<<lexemes[i].first<<" special_char at line "<<lexemes[i].second<<endl;
         }
-        else if(comparators.find(lexemes[i]) != comparators.end()) {
-            cout<<lexemes[i]<<" comparator"<<endl;
+        else if(comparators.find(lexemes[i].first) != comparators.end()) {
+            cout<<lexemes[i].first<<" comparator at line "<<lexemes[i].second<<endl;
         }
-        else if(check_numeric(lexemes[i])) {
-            cout<<lexemes[i]<<" number"<<endl;
+        else if(assignment_operators.find(lexemes[i].first) != assignment_operators.end()) {
+            cout<<lexemes[i].first<<" assignment_operator at line "<<lexemes[i].second<<endl;
         }
-        else if(check_indentifier(lexemes[i])) {
-            cout<<lexemes[i]<<" identifier"<<endl;
+        else if(check_numeric(lexemes[i].first)) {
+            cout<<lexemes[i].first<<" integer_literal at line "<<lexemes[i].second<<endl;
         }
-        else if(check_string_literal(lexemes[i])) {
-            cout<<lexemes[i]<<" string literal"<<endl;
+        else if(check_identifier(lexemes[i].first)) {
+            cout<<lexemes[i].first<<" identifier at line "<<lexemes[i].second<<endl;
         }
-        else if(check_float_literal(lexemes[i])) {
-            cout<<lexemes[i]<<" floating_point_Literal"<<endl;
+        else if(check_string_literal(lexemes[i].first)) {
+            cout<<lexemes[i].first<<" string literal at line "<<lexemes[i].second<<endl;
+        }
+        else if(check_float_literal(lexemes[i].first)) {
+            cout<<lexemes[i].first<<" floating_point_Literal at line "<<lexemes[i].second<<endl;
+        }
+        else {
+            cout<<lexemes[i].first<<" lexical error in line "<<lexemes[i].second<<endl;
         }
     }
+
+    cout<<"number of lines is "<<line_count<<endl;
 }
