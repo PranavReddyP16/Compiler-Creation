@@ -246,7 +246,7 @@ signed main(int argc, char* argv[]) {
             cout<<lexemes[i].first<<" "<<"unary_operator at line "<<lexemes[i].second<<endl;
         }
         else if(keywords.find(lexemes[i].first) != keywords.end()) {
-            cout<<lexemes[i].first<<" keyword at line "<<lexemes[i].second<<endl;
+            cout<<lexemes[i].first<<" keyword "<<lexemes[i].first<<" at line "<<lexemes[i].second<<endl;
         }
         else if(special_chars.find(lexemes[i].first) != special_chars.end()) {
             cout<<lexemes[i].first<<" special_char at line "<<lexemes[i].second<<endl;
