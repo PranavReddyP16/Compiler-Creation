@@ -90,6 +90,7 @@ bool check_numeric(string token) {
             return false;
         }
     }
+    if(token[0]=='0') return false;
 
     return true;
 }
@@ -117,6 +118,7 @@ bool check_identifier(string token) {
 bool check_float_literal(string token) {
     int decimal_count=0;
     int n = token.size();
+    if(n<2) return false;
 
     for(int i=0;i<n;i++) {
         if(token[i]=='.') {
@@ -128,6 +130,8 @@ bool check_float_literal(string token) {
     }
 
     if(decimal_count!=1) return false;
+    else if(token[0]=='0' && token[1]!='.') return false;
+    else if(token[n-1]=='.') return false;
     else return true;
 }
 
