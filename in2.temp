@@ -1,0 +1,13 @@
+int main()
+{
+    # This line is ignored because its a comment #
+    int _9n=10;
+    if(_9n%2==0)
+    {
+        print("even number \t\n");
+    }
+    else
+    {
+        print("odd number\t\n");
+    }
+}

@@ -1,0 +1,12 @@
+int main()
+{
+    float var;
+    string s;
+    bool b1 = true;
+    bool b2 = false;
+    char c;
+    int i;
+
+    var = ((++i*--i)**-3)//2.3;
+    bool new = (!b1 || b2) && b1;
+}

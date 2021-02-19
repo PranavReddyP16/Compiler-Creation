@@ -1,0 +1,26 @@
+int main()
+{ 
+    #these are lexical errors that are out of the alphabet for this  language#
+    $@^`~`?''
+
+    int n=10;
+    if(n>=5 && n<23)
+    {
+        print(true);
+    }   
+
+    #ill formed identifiers#
+    float 7var;
+    char a!b;
+
+    #ill formed integers and floats#
+    0283
+    2.
+    056.4
+
+    #valid integers and floats#
+    0
+    10000
+    0.0
+    .004
+}

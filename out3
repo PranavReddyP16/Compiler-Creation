@@ -1,0 +1,58 @@
+int keyword int at line 1
+main keyword main at line 1
+( special_char left_parenthesis at line 1
+) special_char right_paranthesis at line 1
+{ special_char left_brace at line 2
+float keyword float at line 3
+var identifier at line 3
+; special_char semicolon at line 3
+string keyword string at line 4
+s identifier at line 4
+; special_char semicolon at line 4
+bool keyword bool at line 5
+b1 identifier at line 5
+= assignment_operator at line 5
+true keyword true at line 5
+; special_char semicolon at line 5
+bool keyword bool at line 6
+b2 identifier at line 6
+= assignment_operator at line 6
+false keyword false at line 6
+; special_char semicolon at line 6
+char keyword char at line 7
+c identifier at line 7
+; special_char semicolon at line 7
+int keyword int at line 8
+i identifier at line 8
+; special_char semicolon at line 8
+var identifier at line 10
+= assignment_operator at line 10
+( special_char left_parenthesis at line 10
+( special_char left_parenthesis at line 10
+++ unary_operator at line 10
+i identifier at line 10
+* arithmetic_operator at line 10
+-- unary_operator at line 10
+i identifier at line 10
+) special_char right_paranthesis at line 10
+** arithmetic_operator at line 10
+- unary operator at line 10
+3 integer_literal at line 10
+) special_char right_paranthesis at line 10
+// arithmetic_operator at line 10
+2.3 floating_point_Literal at line 10
+; special_char semicolon at line 10
+bool keyword bool at line 11
+new identifier at line 11
+= assignment_operator at line 11
+( special_char left_parenthesis at line 11
+! unary_operator at line 11
+b1 identifier at line 11
+|| logical_operator at line 11
+b2 identifier at line 11
+) special_char right_paranthesis at line 11
+&& logical_operator at line 11
+b1 identifier at line 11
+; special_char semicolon at line 11
+} special_char right_brace at line 12
+number of lines is 12

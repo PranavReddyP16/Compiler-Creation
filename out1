@@ -1,0 +1,93 @@
+function keyword function at line 1
+fun1 identifier at line 1
+( special_char left_parenthesis at line 1
+int keyword int at line 1
+a identifier at line 1
+, special_char comma at line 1
+int keyword int at line 1
+b identifier at line 1
+) special_char right_paranthesis at line 1
+{ special_char left_brace at line 2
+print keyword print at line 3
+( special_char left_parenthesis at line 3
+"this function prints a string\n" string literal at line 3
+) special_char right_paranthesis at line 3
+; special_char semicolon at line 3
+} special_char right_brace at line 4
+int keyword int at line 6
+main keyword main at line 6
+( special_char left_parenthesis at line 6
+int keyword int at line 6
+argc identifier at line 6
+, special_char comma at line 6
+char keyword char at line 6
+argv identifier at line 6
+) special_char right_paranthesis at line 6
+{ special_char left_brace at line 7
+int keyword int at line 8
+n identifier at line 8
+= assignment_operator at line 8
+34 integer_literal at line 8
+; special_char semicolon at line 8
+int keyword int at line 9
+ans identifier at line 9
+= assignment_operator at line 9
+0 integer_literal at line 9
+; special_char semicolon at line 9
+for keyword for at line 10
+( special_char left_parenthesis at line 10
+int keyword int at line 10
+i identifier at line 10
+= assignment_operator at line 10
+0 integer_literal at line 10
+; special_char semicolon at line 10
+i identifier at line 10
+< comparator at line 10
+n identifier at line 10
+; special_char semicolon at line 10
+i identifier at line 10
+++ unary_operator at line 10
+) special_char right_paranthesis at line 10
+{ special_char left_brace at line 11
+ans identifier at line 12
+= assignment_operator at line 12
+( special_char left_parenthesis at line 12
+( special_char left_parenthesis at line 12
+45.09 floating_point_Literal at line 12
+) special_char right_paranthesis at line 12
+* arithmetic_operator at line 12
+( special_char left_parenthesis at line 12
+ans identifier at line 12
+/ arithmetic_operator at line 12
+4 integer_literal at line 12
++ arithmetic_operator at line 12
+( special_char left_parenthesis at line 12
+56 integer_literal at line 12
+) special_char right_paranthesis at line 12
+) special_char right_paranthesis at line 12
+) special_char right_paranthesis at line 12
+- arithmetic_operator at line 12
+.9 floating_point_Literal at line 12
++ arithmetic_operator at line 12
+( special_char left_parenthesis at line 12
+1 integer_literal at line 12
+<< arithmetic_operator at line 12
+4 integer_literal at line 12
+) special_char right_paranthesis at line 12
+* arithmetic_operator at line 12
+( special_char left_parenthesis at line 12
+1 integer_literal at line 12
+>> arithmetic_operator at line 12
+n identifier at line 12
+) special_char right_paranthesis at line 12
+; special_char semicolon at line 12
+} special_char right_brace at line 13
+fun1 identifier at line 15
+( special_char left_parenthesis at line 15
+5 integer_literal at line 15
+, special_char comma at line 15
+45.8 floating_point_Literal at line 15
+) special_char right_paranthesis at line 15
+; special_char semicolon at line 15
+} special_char right_brace at line 16
+number of lines is 16

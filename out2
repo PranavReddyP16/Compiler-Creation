@@ -1,0 +1,35 @@
+int keyword int at line 1
+main keyword main at line 1
+( special_char left_parenthesis at line 1
+) special_char right_paranthesis at line 1
+{ special_char left_brace at line 2
+int keyword int at line 4
+_9n identifier at line 4
+= assignment_operator at line 4
+10 integer_literal at line 4
+; special_char semicolon at line 4
+if keyword if at line 5
+( special_char left_parenthesis at line 5
+_9n identifier at line 5
+% arithmetic_operator at line 5
+2 integer_literal at line 5
+== comparator at line 5
+0 integer_literal at line 5
+) special_char right_paranthesis at line 5
+{ special_char left_brace at line 6
+print keyword print at line 7
+( special_char left_parenthesis at line 7
+"even number \t\n" string literal at line 7
+) special_char right_paranthesis at line 7
+; special_char semicolon at line 7
+} special_char right_brace at line 8
+else keyword else at line 9
+{ special_char left_brace at line 10
+print keyword print at line 11
+( special_char left_parenthesis at line 11
+"odd number\t\n" string literal at line 11
+) special_char right_paranthesis at line 11
+; special_char semicolon at line 11
+} special_char right_brace at line 12
+} special_char right_brace at line 13
+number of lines is 13

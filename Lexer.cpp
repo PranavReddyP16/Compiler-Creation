@@ -1,5 +1,4 @@
 #include<bits/stdc++.h>
-#include <string>
 using namespace std;
 
 vector<int> line_numbers;
@@ -18,6 +17,7 @@ set<string> special_chars;
 int line_count=1;
 
 void handle_delimeter(string &s, int &pos) {
+    //handle if last lexeme
     if(pos==(int)s.size()-1) {
         if(s[pos] == '\n') {
             return;
@@ -90,7 +90,7 @@ bool check_numeric(string token) {
             return false;
         }
     }
-    if(token[0]=='0') return false;
+    if(token[0]=='0' && n>1) return false;
 
     return true;
 }
@@ -102,7 +102,7 @@ bool check_identifier(string token) {
         return false;
     }
 
-    if(!(isalpha(token[0]) && token[0]!='_')) {
+    if(!(isalpha(token[0])) && token[0]!='_') {
         return false;
     }
 
@@ -143,6 +143,19 @@ bool check_string_literal(string token) {
     return false;
 }
 
+string which_special_char(string s)
+{
+    if(s==";") return "semicolon";
+    else if(s=="(") return "left_parenthesis";
+    else if(s==")") return "right_paranthesis";
+    else if(s=="{") return "left_brace";
+    else if(s=="}") return "right_brace";
+    else if(s=="[") return "left_bracket";
+    else if(s=="]") return "right_bracket";
+    else if(s==",") return "comma";
+    else return "None";
+}
+
 bool is_valid_file(char* fname) {
     int i=0;
     while(fname[i]!='.' && fname[i]!='\0') {
@@ -166,15 +179,15 @@ signed main(int argc, char* argv[]) {
         return 0;
     }
 
+    //reading input file as a string and removing EOF character
     ifstream ifs(argv[1]);
     string s((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
     s.pop_back();
 
 
-    //TODO handle the case with strings
-    delimeters = {'<', '>', '=', '&', '|', '+', '-',
-                    '*', '/', '^', '%', ' ', ',', '[', 
-                    ']', '{', '}', '(', ')', ';', '"', '#', '\'', '\n',
+    delimeters = {'<', '>', '=', '&', '|', '!', '+', '-',
+                    '*', '/', '%', ' ', ',', '[', 
+                    ']', '{', '}', '(', ')', ';', '"', '#', '\n',
                     '\t', '\r'};
 
     double_operators = {"<<", ">>", "==", "&&", "||", "++",
@@ -183,7 +196,7 @@ signed main(int argc, char* argv[]) {
 
     whitespaces = {' ', '\n', '\t', '\r'};
 
-    keywords = {"int", "char", "float", "bool", "if", 
+    keywords = {"int", "char", "float", "bool", "string", "if", 
                 "else", "for", "main", "true", "false",
                 "function", "return", "print"};
 
@@ -199,6 +212,7 @@ signed main(int argc, char* argv[]) {
 
     special_chars = {"(",")","{","}","[","]",";",","};
 
+    //breaking into lexemes using delimiters and the handle_delimeter() function
     int n = s.size();
     string temp = "";
     for(int i=0;i<n;i++) {
@@ -223,20 +237,20 @@ signed main(int argc, char* argv[]) {
         lexemes.push_back({temp, line_count});
     }
 
-    //for(int i=0;i<(int)lexemes.size();i++) cout<<lexemes[i].first<<endl;
-
     /***************************************finished obtaining lexemes*************************************/
 
+    //printing all lexemes with corresponding tokens and line numbers
     for(int i=0;i<(int)lexemes.size();i++) {
         if(arithmetic_operators.find(lexemes[i].first) != arithmetic_operators.end()) {
+            //checking for unary based on token of previous lexeme
             if(i>0 && 
-                    !(check_identifier(lexemes[i-1].first) || check_numeric(lexemes[i-1].first) || 
-                    check_float_literal(lexemes[i-1].first) || lexemes[i-1].first==")" || double_operators.find(lexemes[i-1].first) != double_operators.end()) 
-                    && (lexemes[i].first=="-" || lexemes[i].first=="+")) {
+                    ((!check_identifier(lexemes[i-1].first) && !check_numeric(lexemes[i-1].first) && 
+                    !check_float_literal(lexemes[i-1].first) && !(lexemes[i-1].first==")")) || double_operators.find(lexemes[i-1].first) != double_operators.end()) 
+                    && (lexemes[i].first=="-" || lexemes[i].first=="+" || lexemes[i].first=="!")) {
 
                 cout<<lexemes[i].first<<" unary operator at line "<<lexemes[i].second<<endl;
             }
-            else if(i==0 && (lexemes[i].first=="+" || lexemes[i].first=="-")) {
+            else if(i==0 && (lexemes[i].first=="+" || lexemes[i].first=="-" || lexemes[i].first=="!")) {
                 cout<<lexemes[i].first<<" unary operator at line "<<lexemes[i].second<<endl;
             }
             else {
@@ -253,7 +267,7 @@ signed main(int argc, char* argv[]) {
             cout<<lexemes[i].first<<" keyword "<<lexemes[i].first<<" at line "<<lexemes[i].second<<endl;
         }
         else if(special_chars.find(lexemes[i].first) != special_chars.end()) {
-            cout<<lexemes[i].first<<" special_char at line "<<lexemes[i].second<<endl;
+            cout<<lexemes[i].first<<" special_char "<<which_special_char(lexemes[i].first)<<" at line "<<lexemes[i].second<<endl;
         }
         else if(comparators.find(lexemes[i].first) != comparators.end()) {
             cout<<lexemes[i].first<<" comparator at line "<<lexemes[i].second<<endl;
