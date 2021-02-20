@@ -42,5 +42,5 @@ b identifier at line 14
 10000 integer_literal at line 23
 0.0 floating_point_Literal at line 24
 .004 floating_point_Literal at line 25
-} special_char right_brace at line 26
-number of lines is 26
+"This is to show that an error will the thrown here \n\t } lexical error in line 29
+number of lines is 29

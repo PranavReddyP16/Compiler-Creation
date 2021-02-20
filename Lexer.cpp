@@ -37,12 +37,15 @@ void handle_delimeter(string &s, int &pos) {
                 line_count++;
             }
 
-            if(s[pos]=='\\') {
-                temp.push_back(s[pos]);
-                temp.push_back(s[pos+1]);
-                pos++;
-            } 
+            //if(s[pos]=='\\') {
+            //    temp.push_back(s[pos]);
+            //    temp.push_back(s[pos+1]);
+            //    pos++;
+            //} 
         
+            if(whitespaces.find(s[pos]) != whitespaces.end()) {
+                temp.push_back(' ');
+            }
             else {
                 temp.push_back(s[pos]);
             }
@@ -136,7 +139,7 @@ bool check_float_literal(string token) {
 }
 
 bool check_string_literal(string token) {
-    if(token[0]=='\"') {
+    if(token[0]=='\"' && token.back()=='\"') {
         return true;
     }
 

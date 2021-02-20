@@ -7,7 +7,7 @@ int main()
     if(n>=5 && n<23)
     {
         print(true);
-    }   
+    }
 
     #ill formed identifiers#
     float 7var;
@@ -23,4 +23,7 @@ int main()
     10000
     0.0
     .004
+
+    #string literals must end with a quote or an error will be thrown#
+    "This is to show that an error will the thrown here \n\t
 }
