@@ -1,20 +1,85 @@
 #include <bits/stdc++.h>
-#define acc 10000
 using namespace std;
+#define acc 10000
+void initialiseParseTable();
 
 //this map handles Action
 //if shift operation then it is a positive number
 //if reduce operation then it is a negative number
 map<pair<int, string>, int> action;
-
 //this map handles Goto
 map<pair<int, string>, int> gotoState;
+//this map handles the rules
+//rule number: RHS -> vector of LHS parts
+map<int, pair<string, vector<string>>> rules;
 
 int main()
 {
     initialiseParseTable();
+
+    //data structures required
+    vector<string> input;
+    stack<pair<string, int>> s; //stack can have string as well as integers for states so if one of them is present as an element the other will be empty string or INT_MAX
+
+    //getting user input tokens
+    cout << "Enter the number of input elements: ";
+    int inputCount;
+    cin >> inputCount;
+
+    cout << "Enter the input elements, one on each line" << endl;
+    for (int i = 0; i < inputCount; ++i)
+    {
+        string temp;
+        cin >> temp;
+        input.push_back(temp);
+    }
+
+    //mandatory conditions for parsing
+    ++inputCount;
+    s.push({"$", INT_MAX});
+    s.push({"", 0});
+
+    input.push_back("$");
+
+    int inputMonitor = 0;
+
+    while (inputMonitor < inputCount)
+    {
+        string currentInput = input[inputMonitor];
+        pair<string, int> stackTop = s.top();
+        cout << stackTop.first << " " << stackTop.second << endl;
+
+        //if the current transition is not present in the parse table
+        if (action.find({stackTop.second, currentInput}) == action.end())
+        {
+            cout << "The input is incorrect!!!!" << endl;
+            break;
+        }
+        //if present
+        else
+        {
+            int actionToTake = action[{stackTop.second, currentInput}];
+
+            if (actionToTake == acc) //accepted state
+            {
+                cout << "The input is correct!!!!" << endl;
+                break;
+            }
+            else if (actionToTake > 0) //shift operation
+            {
+                s.push({currentInput, INT_MAX});
+                s.push({"", actionToTake});
+                ++inputMonitor;
+            }
+            else //reduce operation
+            {
+                //left
+            }
+        }
+    }
 }
 
+//generating the parse table
 void initialiseParseTable()
 {
     action[{0, "main()"}] = 1;
