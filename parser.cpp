@@ -1,7 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define acc 10000
+
+//function declarations
 void initialiseParseTable();
+void initialiseRules();
 
 //this map handles Action
 //if shift operation then it is a positive number
@@ -10,12 +13,13 @@ map<pair<int, string>, int> action;
 //this map handles Goto
 map<pair<int, string>, int> gotoState;
 //this map handles the rules
-//rule number: RHS -> vector of LHS parts
+//(RHS -> vector of LHS parts), (rule number)
 map<int, pair<string, vector<string>>> rules;
 
 int main()
 {
     initialiseParseTable();
+    initialiseRules();
 
     //data structures required
     vector<string> input;
@@ -47,7 +51,6 @@ int main()
     {
         string currentInput = input[inputMonitor];
         pair<string, int> stackTop = s.top();
-        cout << stackTop.first << " " << stackTop.second << endl;
 
         //if the current transition is not present in the parse table
         if (action.find({stackTop.second, currentInput}) == action.end())
@@ -73,10 +76,86 @@ int main()
             }
             else //reduce operation
             {
-                //left
+                actionToTake = abs(actionToTake);
+                vector<string> currentRule = rules[actionToTake].second;
+                stack<string> stackPoppedElements;
+                while (s.size() > 0 && stackPoppedElements.size() < currentRule.size())
+                {
+                    //removing the string and the state number
+                    s.pop();
+                    stackPoppedElements.push(s.top().first);
+                    s.pop();
+                }
+                if (stackPoppedElements.size() != currentRule.size())
+                {
+                    cout << "The input is incorrect!!!!" << endl;
+                    break;
+                }
+                else
+                {
+                    int invalid = 0;
+                    for (auto it : currentRule)
+                    {
+                        if (it != stackPoppedElements.top())
+                        {
+                            invalid = 1;
+                        }
+                        stackPoppedElements.pop();
+                    }
+                    if (invalid == 1)
+                    {
+                        cout << "The input is incorrect!!!!" << endl;
+                        break;
+                    }
+                    else
+                    {
+                        string gotoColumn = rules[actionToTake].first;
+                        int gotoStateVal = s.top().second;
+                        s.push({gotoColumn, INT_MAX});
+                        s.push({"", gotoState[{gotoStateVal, gotoColumn}]});
+                    }
+                }
             }
         }
+        //stack printer
+        // stack<pair<string, int>> s1 = s;
+        // while (!s1.empty())
+        // {
+        //     if (s1.top().first != "")
+        //     {
+        //         cout << s1.top().first;
+        //     }
+        //     else
+        //     {
+        //         cout << s1.top().second;
+        //     }
+        //     s1.pop();
+        // }
+        // cout << endl;
     }
+}
+
+//initialising the rules numbered from 0
+void initialiseRules()
+{
+    rules[0] = {"PROGRAM", {"main()", "{", "STATEMENTS", "}"}};
+    rules[1] = {"STATEMENTS", {"STATEMENT", "STATEMENTS"}};
+    rules[2] = {"STATEMENTS", {}};
+    rules[3] = {"STATEMENT", {"CONDITIONAL"}};
+    rules[4] = {"STATEMENT", {"LOOP"}};
+    rules[5] = {"STATEMENT", {"datatype", "id", ";"}};
+    rules[6] = {"STATEMENT", {"ASSIGNMENT", ";"}};
+    rules[7] = {"CONDITIONAL", {"if", "(", "{", "CONDITIONS", "}", ")", "{", "STATEMENTS", "}", "else", "{", "STATEMENTS", "}"}};
+    rules[8] = {"CONDITIONS", {"CONDITION", "logical_operator", "CONDITION"}};
+    rules[9] = {"CONDITIONS", {"CONDITION"}};
+    rules[10] = {"CONDITION", {"id", "comparator", "TERM"}};
+    rules[11] = {"LOOP", {"for", "(", "ASSIGNMENT", ";", "CONDITIONS", ";", "ASSIGNMENT", ")", "{", "STATEMENTS", "}"}};
+    rules[12] = {"ASSIGNMENT", {"id", "=", "EXPRESSION"}};
+    rules[13] = {"ASSIGNMENT", {"datatype", "id", "=", "EXPRESSION"}};
+    rules[14] = {"EXPRESSION", {"(", "EXPRESSION", "arithmetic_operator", "EXPRESSION", ")"}};
+    rules[15] = {"EXPRESSION", {"TERM"}};
+    rules[16] = {"TERM", {"id"}};
+    rules[17] = {"TERM", {"literal"}};
 }
 
 //generating the parse table
