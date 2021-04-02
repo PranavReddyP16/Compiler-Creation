@@ -31,11 +31,11 @@ int main(int argc, char *argv[])
     vector<string> input;
 
     int inputCount = inputFromLexer.size();
-
+    string curr = "";
     for (int i = 0; i < inputCount; ++i)
     {
         input.push_back(inputFromLexer[i].first);
-        // cout << input[i] << endl;
+        curr += input[i];
     }
 
     //mandatory conditions for parsing
@@ -46,6 +46,8 @@ int main(int argc, char *argv[])
     input.push_back("$");
     //cout << inputCount << endl;
     int inputMonitor = 0;
+    vector<string> ans;
+    ans.push_back(curr);
 
     while (inputMonitor < inputCount)
     {
@@ -119,10 +121,12 @@ int main(int argc, char *argv[])
             }
         }
         //stack printer
+
         if (reductionDone == 1)
         {
             stack<pair<string, int>> s1 = s;
             stack<string> stackInverter;
+            string curr = "";
             while (!s1.empty())
             {
                 if (s1.top().first != "" && s1.top().first != "$")
@@ -133,16 +137,21 @@ int main(int argc, char *argv[])
             }
             while (!stackInverter.empty())
             {
-                cout << stackInverter.top();
+                curr += stackInverter.top();
                 stackInverter.pop();
             }
 
             for (int i = inputMonitor; i < inputCount - 1; ++i)
             {
-                cout << input[i];
+                curr += input[i];
             }
-            cout << endl;
+            ans.push_back(curr);
         }
+    }
+    ans.push_back("PROGRAM");
+    for (int i = ans.size() - 1; i >= 0; --i)
+    {
+        cout << ans[i] << endl;
     }
 }
 
