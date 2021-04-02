@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
         string currentInput = input[inputMonitor];
         pair<string, int> stackTop = s.top();
 
+        int reductionDone = 0;
         //if the current transition is not present in the parse table
         if (action.find({stackTop.second, currentInput}) == action.end())
         {
@@ -62,7 +63,6 @@ int main(int argc, char *argv[])
         else
         {
             int actionToTake = action[{stackTop.second, currentInput}];
-
             if (actionToTake == acc) //accepted state
             {
                 cout << "The input is correct!!!!" << endl;
@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
             }
             else //reduce operation
             {
+                reductionDone = 1;
                 actionToTake = abs(actionToTake);
                 vector<string> currentRule = rules[actionToTake].second;
                 stack<string> stackPoppedElements;
@@ -118,20 +119,30 @@ int main(int argc, char *argv[])
             }
         }
         //stack printer
-        // stack<pair<string, int>> s1 = s;
-        // while (!s1.empty())
-        // {
-        //     if (s1.top().first != "")
-        //     {
-        //         cout << s1.top().first;
-        //     }
-        //     else
-        //     {
-        //         cout << s1.top().second;
-        //     }
-        //     s1.pop();
-        // }
-        // cout << endl;
+        if (reductionDone == 1)
+        {
+            stack<pair<string, int>> s1 = s;
+            stack<string> stackInverter;
+            while (!s1.empty())
+            {
+                if (s1.top().first != "" && s1.top().first != "$")
+                {
+                    stackInverter.push(s1.top().first);
+                }
+                s1.pop();
+            }
+            while (!stackInverter.empty())
+            {
+                cout << stackInverter.top();
+                stackInverter.pop();
+            }
+
+            for (int i = inputMonitor; i < inputCount - 1; ++i)
+            {
+                cout << input[i];
+            }
+            cout << endl;
+        }
     }
 }
 
