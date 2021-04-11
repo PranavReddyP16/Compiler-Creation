@@ -17,6 +17,8 @@ map<pair<int, string>, int> gotoState;
 //(RHS -> vector of LHS parts), (rule number)
 map<int, pair<string, vector<string>>> rules;
 
+bool ifforgoing = 0;
+
 int main(int argc, char *argv[])
 {
     //cout << add(2, 3);
@@ -29,12 +31,16 @@ int main(int argc, char *argv[])
     vector<std::pair<std::string, int>> inputFromLexer = lexerCall(argc, argv);
     //vector<pair<string, int>> inputFromLexer = lexer();
     vector<string> input;
+    vector<int> lineNumbers;
+
+    bool errorOccured = 0;
 
     int inputCount = inputFromLexer.size();
     string curr = "";
     for (int i = 0; i < inputCount; ++i)
     {
         input.push_back(inputFromLexer[i].first);
+        lineNumbers.push_back(inputFromLexer[i].second);
         curr += input[i];
     }
 
@@ -49,17 +55,54 @@ int main(int argc, char *argv[])
     vector<string> ans;
     ans.push_back(curr);
 
+    set<string> eidentifiers;
+    set<string> ieidentifiers;
+    eidentifiers = {"STATEMENT", "STATEMENTS", "CONDITIONAL"};
+    ieidentifiers = {";", "}"};
+
     while (inputMonitor < inputCount)
     {
         string currentInput = input[inputMonitor];
-        pair<string, int> stackTop = s.top();
 
+        if (currentInput == "for" || currentInput == "if")
+        {
+            //cout << "for came" << endl;
+            ifforgoing = 1;
+        }
+        //cout << currentInput << " " << ifforgoing << endl;
+        pair<string, int> stackTop = s.top();
+        // cout << currentInput << endl;
         int reductionDone = 0;
         //if the current transition is not present in the parse table
         if (action.find({stackTop.second, currentInput}) == action.end())
         {
-            cout << "The input is incorrect!!!!" << endl;
-            break;
+            errorOccured = 1;
+            //check for lexical error
+            if (currentInput == "lexical_error")
+            {
+                cout << "Lexical error at line" << lineNumbers[inputMonitor] << endl;
+                ++inputMonitor;
+            }
+            else
+            {
+                cout << "Syntax error at line" << lineNumbers[inputMonitor] << endl;
+                pair<string, int> prev;
+                while (!s.empty() && eidentifiers.find(s.top().first) == eidentifiers.end())
+                {
+                    prev = s.top();
+                    s.pop();
+                }
+                s.push(prev);
+                // if (!s.empty())
+                //     cout << s.top().second << endl;
+                while (inputMonitor < input.size() && (ifforgoing ? input[inputMonitor] != "}" : ieidentifiers.find(input[inputMonitor]) == ieidentifiers.end()))
+                {
+                    ++inputMonitor;
+                }
+                ifforgoing = 0;
+                inputMonitor += 1;
+                //cout << inputMonitor << endl;
+            }
         }
         //if present
         else
@@ -149,7 +192,7 @@ int main(int argc, char *argv[])
         }
     }
     ans.push_back("PROGRAM");
-    for (int i = ans.size() - 1; i >= 0; --i)
+    for (int i = ans.size() - 1; i >= 0 && errorOccured == 0; --i)
     {
         cout << ans[i] << endl;
     }
