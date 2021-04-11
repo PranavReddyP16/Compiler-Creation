@@ -17,11 +17,11 @@ map<pair<int, string>, int> gotoState;
 //(RHS -> vector of LHS parts), (rule number)
 map<int, pair<string, vector<string>>> rules;
 
-bool ifforgoing = 0;
+bool ifforgoing = 0;   //checks if for blocks ongoing
+bool errorOccured = 0; //if any kind of error occured in the program
 
 int main(int argc, char *argv[])
 {
-    //cout << add(2, 3);
     initialiseParseTable();
     initialiseRules();
     //data structures required
@@ -29,11 +29,9 @@ int main(int argc, char *argv[])
     stack<pair<string, int>> s; //stack can have string as well as integers for states so if one of them is present as an element the other will be empty string or INT_MAX
 
     vector<std::pair<std::string, int>> inputFromLexer = lexerCall(argc, argv);
-    //vector<pair<string, int>> inputFromLexer = lexer();
+
     vector<string> input;
     vector<int> lineNumbers;
-
-    bool errorOccured = 0;
 
     int inputCount = inputFromLexer.size();
     string curr = "";
@@ -50,15 +48,18 @@ int main(int argc, char *argv[])
     s.push({"", 0});
 
     input.push_back("$");
-    //cout << inputCount << endl;
     int inputMonitor = 0;
     vector<string> ans;
-    ans.push_back(curr);
 
-    set<string> eidentifiers;
-    set<string> ieidentifiers;
+    ans.push_back(curr); //entering the input in the stack
+
+    set<string> eidentifiers;  //identifiers to recognise if we need to stop popping from the stack
+    set<string> ieidentifiers; //identifiers to recognise if we need to start scanning the input again after this symbol
     eidentifiers = {"STATEMENT", "STATEMENTS", "CONDITIONAL"};
     ieidentifiers = {";", "}"};
+
+    cout << "Execution log----->" << endl;
+    cout << endl;
 
     while (inputMonitor < inputCount)
     {
@@ -66,26 +67,26 @@ int main(int argc, char *argv[])
 
         if (currentInput == "for" || currentInput == "if")
         {
-            //cout << "for came" << endl;
             ifforgoing = 1;
         }
-        //cout << currentInput << " " << ifforgoing << endl;
         pair<string, int> stackTop = s.top();
-        // cout << currentInput << endl;
-        int reductionDone = 0;
+
+        int reductionDone = 0; //checks if reduction done to print parse tree
+
         //if the current transition is not present in the parse table
         if (action.find({stackTop.second, currentInput}) == action.end())
         {
             errorOccured = 1;
+
             //check for lexical error
             if (currentInput == "lexical_error")
             {
-                cout << "Lexical error at line" << lineNumbers[inputMonitor] << endl;
+                cout << "Lexical error at line " << lineNumbers[inputMonitor] << endl;
                 ++inputMonitor;
             }
             else
             {
-                cout << "Syntax error at line" << lineNumbers[inputMonitor] << endl;
+                cout << "Syntax error at line " << lineNumbers[inputMonitor] << endl;
                 pair<string, int> prev;
                 while (!s.empty() && eidentifiers.find(s.top().first) == eidentifiers.end())
                 {
@@ -93,15 +94,14 @@ int main(int argc, char *argv[])
                     s.pop();
                 }
                 s.push(prev);
-                // if (!s.empty())
-                //     cout << s.top().second << endl;
+
+                //working on the input if error occured
                 while (inputMonitor < input.size() && (ifforgoing ? input[inputMonitor] != "}" : ieidentifiers.find(input[inputMonitor]) == ieidentifiers.end()))
                 {
                     ++inputMonitor;
                 }
                 ifforgoing = 0;
                 inputMonitor += 1;
-                //cout << inputMonitor << endl;
             }
         }
         //if present
@@ -110,7 +110,14 @@ int main(int argc, char *argv[])
             int actionToTake = action[{stackTop.second, currentInput}];
             if (actionToTake == acc) //accepted state
             {
-                cout << "The input is correct!!!!" << endl;
+                if (errorOccured)
+                {
+                    cout << "Input parsed but had errors" << endl;
+                }
+                else
+                {
+                    cout << "Input is correct" << endl;
+                }
                 break;
             }
             else if (actionToTake > 0) //shift operation
@@ -163,8 +170,8 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        //stack printer
 
+        //derivation
         if (reductionDone == 1)
         {
             stack<pair<string, int>> s1 = s;
@@ -192,6 +199,13 @@ int main(int argc, char *argv[])
         }
     }
     ans.push_back("PROGRAM");
+
+    if (errorOccured == 0)
+    {
+        cout << endl;
+        cout << "Derivation printing ----->  " << endl;
+        cout << endl;
+    }
     for (int i = ans.size() - 1; i >= 0 && errorOccured == 0; --i)
     {
         cout << ans[i] << endl;
