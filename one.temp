@@ -1,11 +1,6 @@
-main(){
-	a=(a+1);
-	for(int a=1;a<;a=(a+1)){
-		a=4;
-	}
-	if(a<4){
+main(){	
+	int a=0;
+	for(int a 2;a<3 && a>6;a=(a+1)){
 		b=(1+a);
-	}
-	c=5;
-	b=1;
+	}	
 }

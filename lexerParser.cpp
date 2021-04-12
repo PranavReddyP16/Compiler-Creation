@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     while (inputMonitor < inputCount)
     {
         string currentInput = input[inputMonitor];
-
+        // string currentIn = lexerCall(argc, argv);
         if (currentInput == "for" || currentInput == "if")
         {
             ifforgoing = 1;
@@ -81,12 +81,14 @@ int main(int argc, char *argv[])
             //check for lexical error
             if (currentInput == "lexical_error")
             {
-                cout << "Lexical error at line " << lineNumbers[inputMonitor] << endl;
+                if (lineNumbers[inputMonitor] != 0 && lineNumbers[inputMonitor] <= 100)
+                    cout << "Lexical error at line " << lineNumbers[inputMonitor] << endl;
                 ++inputMonitor;
             }
             else
             {
-                cout << "Syntax error at line " << lineNumbers[inputMonitor] << endl;
+                if (lineNumbers[inputMonitor] != 0 && lineNumbers[inputMonitor] <= 100)
+                    cout << "Syntax error at line " << lineNumbers[inputMonitor] << ":: " << currentInput << " was not expected." << endl;
                 pair<string, int> prev;
                 while (!s.empty() && eidentifiers.find(s.top().first) == eidentifiers.end())
                 {
@@ -203,7 +205,7 @@ int main(int argc, char *argv[])
     if (errorOccured == 0)
     {
         cout << endl;
-        cout << "Derivation printing ----->  " << endl;
+        cout << "RMD printing ----->  " << endl;
         cout << endl;
     }
     for (int i = ans.size() - 1; i >= 0 && errorOccured == 0; --i)
