@@ -1,0 +1,8 @@
+main(){
+	string name="Pranay";
+	int j=0;
+	for(int i=;i<9;i=(i+1)){
+		j=1;
+	}
+	name="Pranav";
+}
